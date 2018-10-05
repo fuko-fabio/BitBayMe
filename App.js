@@ -1,40 +1,28 @@
-import React from 'react';
-import { Container, Header, Title, Content, Button, Left, Right, Body, Icon, Text, List, ListItem, Grid, Col, H3 } from 'native-base';
-import CurrencyListHeader from './components/CurrencyListHeader';
-import CurrencyListItem from './components/CurrencyListItem';
-import { cryptoCurrencyCode } from './config';
+import React, { Component } from 'react';
+import AppNavigator from './src/AppNavigator';
+import Expo from "expo";
 
-export default class App extends React.Component {
-  async componentWillMount() {
+export default class App extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      isReady: false
+    };
+  }
+
+  async componentWillMount () {
     await Expo.Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      Ionicons: require("native-base/Fonts/Ionicons.ttf")
     });
+    this.setState({ isReady: true });
   }
 
   render () {
-    return (
-      <Container>
-        <Header>
-          <Left>
-            <Button transparent>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>BitBayMe</Title>
-          </Body>
-          <Right />
-        </Header>
-        <Content>
-          <List>
-            <CurrencyListHeader/>
-            { Object.keys(cryptoCurrencyCode).map((code, index) => (
-              <CurrencyListItem key={index} cryptoCurrencyCode={code}/>
-            ))}
-          </List>
-        </Content>
-      </Container>
-    );
+    if (!this.state.isReady) {
+      return <Expo.AppLoading />;
+    }
+    return <AppNavigator/>;
   }
 }
